@@ -1,5 +1,3 @@
-![Docker](https://github.com/linkyard/docker-logrotate/workflows/Docker/badge.svg)
-
 # logrotate
 
 This is a docker container based on Alpine Linux with `logrotate`.
@@ -17,8 +15,9 @@ configure some logrotation features with the following environment variables:
   either `nocompress` or `compress`
 - `LOGROTATE_ROTATE` (default: `5`): The `rotate` option of logrotate
 - `LOGROTATE_SIZE` (default `50M`): the `size` option of logrotate
+- `LOGROTATE_SU` (default `(empty)`): the su option
 
-If you want to use a different logrotate configuration, mount a `logrotate.conf` at `/etc/logrotate.conf`
+If you want to use a different logrotate configuration, mount a `logrotate.conf` at `/conf/logrotate.conf`
 into the container. The environment variables mentioned above have no effect if you supply your own
 logrotate configuration file.
 
@@ -37,19 +36,11 @@ docker run \
   # don't rotate at all but truncate logs when they exceed the configured rotation size
   -e LOGROTATE_ROTATE="0" \
   # run logrotate every 5 minutes
-  -e LOGROTATE_CRON="*/5 0 0 0 0" \
-  linkyard:logrotate
+  -e LOGROTATE_CRON="*/5 * * * *" \
+  ltvan/logrotate
 ```
 
 ## Attribution
 
-This image is somewhat similar to the no longer maintained [blacklabelops/logrotate](https://github.com/blacklabelops/logrotate)
-but a lot simpler to use and maintain.
-
-
-# Usage
-It's double published (github and private gcr repo).
-
-`docker run ghcr.io/linkyard/logrotate`
-or
-`docker run eu.gcr.io/linkyard-191615/linkyard-cloud/logrotate`
+This image is based on [linkyard/logrotate](https://github.com/linkyard/docker-logrotate) 
+with some modification on the logrotate.conf template to suite my need.

@@ -6,6 +6,7 @@ RUN set -x \
   && mv /etc/periodic/daily/logrotate /etc/.logrotate.cronjob
 
 COPY entrypoint.sh /entrypoint.sh
+COPY conf-watch.sh /conf-watch.sh
 
 VOLUME ["/logs"]
 

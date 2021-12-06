@@ -2,8 +2,10 @@
 
 TS_FORMAT="%Y-%m-%dT%H:%M:%S%z "
 
-if [ -e /etc/logrotate.conf ]; then
-  echo "Using mounted /etc/logrotate.conf:" | ts "${TS_FORMAT}"
+if [[ -e /conf/logrotate.conf ]]; then
+  cp /conf/logrotate.conf /etc/logrotate.conf
+  echo "Using mounted /conf/logrotate.conf:" | ts "${TS_FORMAT}"
+  inotifyd /conf-watch.sh /conf/logrotate.conf:w &
 else
   echo "Using templated /etc/logrotate.conf:" | ts "${TS_FORMAT}"
   {
@@ -12,6 +14,7 @@ else
     echo "  ${LOGROTATE_COMPRESS:-nocompress}"
     echo "  rotate ${LOGROTATE_ROTATE:-5}"
     echo "  size ${LOGROTATE_SIZE:-50M}"
+    [[ -n $LOGROTATE_SU ]] && echo "  ${LOGROTATE_SU}"
     echo "}"
   } > /etc/logrotate.conf
 fi
@@ -27,3 +30,4 @@ fi
 
 # shellcheck disable=SC2086
 exec crond -d ${CROND_LOGLEVEL:-7} -f 2>&1 | ts "${TS_FORMAT}"
+echo "test"
